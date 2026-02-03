@@ -1,8 +1,12 @@
 // src/lib/api.ts
 import axios from "axios";
+//LocalHost URL
+//http://localhost:8080
+//Live URL
+//http://13.126.236.113:5000
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_URL || "http://13.126.236.113",
   headers: {
     "Content-Type": "application/json",
   },

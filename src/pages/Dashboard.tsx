@@ -4,10 +4,22 @@ import { AttendanceChart } from "@/components/dashboard/AttendanceChart";
 import { DepartmentChart } from "@/components/dashboard/DepartmentChart";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { useEffect, useState } from "react";
-import api from "@/lib/api";
+import { fetchEmployees } from "@/lib/EmployeeService";
 
 export default function Dashboard() {
   const [totalEmployees, setTotalEmployees] = useState(0);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchEmployees();
+        setTotalEmployees(Array.isArray(data) ? data.length : 0);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data", error);
+      }
+    };
+    loadData();
+  }, []);
 
   return (
     <div className="space-y-6">
