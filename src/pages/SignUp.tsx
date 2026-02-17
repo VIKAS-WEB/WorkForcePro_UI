@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { registerUser } from "@/lib/AuthService";
+
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -13,32 +15,69 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to login for demo purposes
-    navigate("/login");
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("You must agree to the terms");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await registerUser({
+        fullName,
+        email,
+        password,
+      });
+      // Show success message or simple redirect
+      // You might want to show a toast here in a real app
+      navigate("/login");
+    } catch (err: any) {
+      console.error("Registration invalid", err);
+      // Try to get a meaningful error message from backend
+      const message = err.response?.data?.message || err.response?.data || "Registration failed. Please try again.";
+      setError(typeof message === 'string' ? message : JSON.stringify(message));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <div className="w-full max-w-5xl bg-card rounded-3xl shadow-2xl overflow-hidden flex animate-fade-in">
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center p-4 relative"
+      style={{ backgroundImage: "url('/bg-login.png')" }}
+    >
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-blue-950/20 backdrop-blur-[2px]" />
+
+      <div className="w-full max-w-5xl bg-card rounded-3xl shadow-2xl overflow-hidden flex animate-fade-in relative z-10">
         {/* Left Panel - Decorative */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
           {/* Background Image with Amber Overlay */}
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: `url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80')`,
             }}
           />
-          <div className="absolute inset-0 bg-amber-500/85" />
-          
+          <div className="absolute inset-0 bg-blue-500/85" />
+
           {/* Organic Wave Shape */}
-          <svg 
+          <svg
             className="absolute right-0 top-0 h-full w-1/2 text-card"
-            viewBox="0 0 100 100" 
+            viewBox="0 0 100 100"
             preserveAspectRatio="none"
             fill="currentColor"
           >
@@ -46,9 +85,9 @@ export default function SignUp() {
           </svg>
 
           {/* Curved Decorative Lines */}
-          <svg 
+          <svg
             className="absolute inset-0 w-full h-full"
-            viewBox="0 0 400 500" 
+            viewBox="0 0 400 500"
             preserveAspectRatio="xMidYMid slice"
           >
             <path
@@ -70,7 +109,7 @@ export default function SignUp() {
               strokeWidth="1"
             />
           </svg>
-          
+
           {/* Content */}
           <div className="relative z-10 flex flex-col h-full p-10 text-white">
             <div className="flex items-center gap-2">
@@ -89,7 +128,7 @@ export default function SignUp() {
           {/* Mobile Logo */}
           <div className="flex lg:hidden items-center gap-2 mb-8">
             <span className="text-2xl font-light">Work</span>
-            <span className="text-2xl font-bold text-amber-500">FORCE PRO</span>
+            <span className="text-2xl font-bold text-blue-500">FORCE PRO</span>
           </div>
 
           <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
@@ -100,6 +139,12 @@ export default function SignUp() {
               </p>
             </div>
 
+            {error && (
+              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-100">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <Input
@@ -108,7 +153,8 @@ export default function SignUp() {
                   placeholder="Full Name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
+                  required
                 />
                 <User className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
@@ -120,7 +166,8 @@ export default function SignUp() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
+                  required
                 />
                 <Mail className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
@@ -132,7 +179,8 @@ export default function SignUp() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
+                  required
                 />
                 <button
                   type="button"
@@ -154,7 +202,8 @@ export default function SignUp() {
                   placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                  className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
+                  required
                 />
                 <button
                   type="button"
@@ -174,30 +223,30 @@ export default function SignUp() {
                   id="terms"
                   checked={agreeTerms}
                   onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
-                  className="mt-0.5 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
+                  className="mt-0.5 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                 />
                 <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
                   I agree to the{" "}
-                  <Link to="#" className="text-amber-500 hover:text-amber-600">Terms of Service</Link>
+                  <Link to="#" className="text-blue-500 hover:text-blue-600">Terms of Service</Link>
                   {" "}and{" "}
-                  <Link to="#" className="text-amber-500 hover:text-amber-600">Privacy Policy</Link>
+                  <Link to="#" className="text-blue-500 hover:text-blue-600">Privacy Policy</Link>
                 </label>
               </div>
 
               <div className="flex justify-end pt-2">
-                <Button 
-                  type="submit" 
-                  className="px-8 h-11 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25"
-                  disabled={!agreeTerms}
+                <Button
+                  type="submit"
+                  className="px-8 h-11 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+                  disabled={!agreeTerms || isLoading}
                 >
-                  Sign Up
+                  {isLoading ? "Creating Account..." : "Sign Up"}
                 </Button>
               </div>
             </form>
 
             <p className="text-center text-sm text-muted-foreground mt-6">
               Already have an account?{" "}
-              <Link to="/login" className="font-medium text-amber-500 hover:text-amber-600 transition-colors">
+              <Link to="/login" className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
                 Login
               </Link>
             </p>
@@ -205,13 +254,13 @@ export default function SignUp() {
 
           {/* Footer Links */}
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground pt-6">
-            <Link to="#" className="hover:text-amber-500 transition-colors">Security Policy</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Security Policy</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Privacy Policy</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Privacy Policy</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Legal</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Legal</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Technical Support</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Technical Support</Link>
           </div>
         </div>
       </div>

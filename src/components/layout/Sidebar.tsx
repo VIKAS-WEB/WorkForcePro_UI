@@ -27,27 +27,28 @@ const menuItems = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
-interface SidebarProps {
+export interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  onItemClick?: () => void;
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, onItemClick }: SidebarProps) {
   const location = useLocation();
 
   return (
     <aside
       className={cn(
-       "fixed left-0 top-0 z-40 h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out",
+        "h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out border-r border-sidebar-border",
         collapsed ? "w-20" : "w-64"
       )}
     >
       <div className="flex h-full flex-col">
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sidebar-primary">
-              <Building2 className="h-6 w-6 text-sidebar-primary-foreground" />
+          <Link to="/" className="flex items-center gap-3" onClick={onItemClick}>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-transparent">
+              <img src="/Logo.png" alt="WorkForce Pro Logo" className="h-8 w-8 object-contain" />
             </div>
             {!collapsed && (
               <span className="text-lg font-bold text-sidebar-foreground">
@@ -66,6 +67,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             const linkContent = (
               <Link
                 to={item.path}
+                onClick={onItemClick}
                 className={cn(
                   "sidebar-item",
                   isActive && "active"
@@ -97,7 +99,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="mb-2 w-full justify-center text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="mb-2 w-full justify-center text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hidden lg:flex"
           >
             {collapsed ? (
               <ChevronRight className="h-5 w-5" />

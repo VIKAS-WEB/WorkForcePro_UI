@@ -12,13 +12,14 @@ import PrivateRoute from "@/components/PrivateRoute";
 // Lazy load pages
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Employees = lazy(() => import("@/pages/Employees"));
-const Attendance = lazy(() => import("@/pages/Attendence"));
+const Attendance = lazy(() => import("@/pages/Attendance"));
 const Leave = lazy(() => import("@/pages/Leave"));
 const Payroll = lazy(() => import("@/pages/Payroll"));
 const Roles = lazy(() => import("@/pages/Roles"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Login = lazy(() => import("@/pages/Login"));
 const SignUp = lazy(() => import("@/pages/SignUp"));
+const Profile = lazy(() => import("@/pages/Profile"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
                   <Route path="/payroll" element={<Payroll />} />
                   <Route path="/roles" element={<Roles />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/profile" element={<Profile />} />
                 </Route>
               </Route>
 

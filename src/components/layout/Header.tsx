@@ -1,4 +1,5 @@
-import { Bell, Search, Moon, Sun, Menu } from "lucide-react";
+import { Bell, Search, Moon, Sun, Menu, User } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,6 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/useTheme";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "@/lib/AuthService";
+import { getValidImageUrl } from "@/lib/utils";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -18,6 +22,19 @@ interface HeaderProps {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to load user in header", error);
+      }
+    };
+    loadUser();
+  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -25,6 +42,11 @@ export function Header({ onMenuClick }: HeaderProps) {
 
   // Helper to decide icon color strength
   const iconClass = "h-5 w-5 text-foreground/95"; // 95% opacity for better visibility
+
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    return name.split(" ").map((n) => n[0]).join("").toUpperCase().substring(0, 2);
+  };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur-xl px-4 lg:px-6">
@@ -85,9 +107,9 @@ export function Header({ onMenuClick }: HeaderProps) {
               className="relative h-10 w-10 rounded-full p-0 hover:bg-accent/80"
             >
               <Avatar className="h-10 w-10">
-                <AvatarImage src="/placeholder.svg" alt="User avatar" />
+                <AvatarImage src={getValidImageUrl(user?.profileImage)} alt="User avatar" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  JD
+                  {user ? getInitials(user.name || user.fullName) : <User className="h-5 w-5" />}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -95,14 +117,18 @@ export function Header({ onMenuClick }: HeaderProps) {
           <DropdownMenuContent className="w-56" align="end">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">John Doe</p>
+                <p className="text-sm font-medium leading-none">{user?.name || user?.fullName || "Guest"}</p>
                 <p className="text-xs text-muted-foreground">
-                  john.doe@company.com
+                  {user?.email || "No email"}
                 </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/profile" className="cursor-pointer w-full">
+                Profile
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive">

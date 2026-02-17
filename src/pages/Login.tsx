@@ -28,9 +28,9 @@ export default function Login() {
       localStorage.setItem("token", token);
       console.log("Token saved:", token.substring(0, 20) + "..."); // safety
       // ★★★ Yeh line add karo ★★★
-    console.log("LOGIN SUCCESS - Token:", token);
-    console.log("Token length:", token.length);
-    console.log("Token first 20 chars:", token.substring(0, 20) + "...");
+      console.log("LOGIN SUCCESS - Token:", token);
+      console.log("Token length:", token.length);
+      console.log("Token first 20 chars:", token.substring(0, 20) + "...");
 
       navigate("/", { replace: true });   // ← window.location.replace ki jagah better
       // ya   navigate("/dashboard", { replace: true });
@@ -43,8 +43,14 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <div className="w-full max-w-5xl bg-card rounded-3xl shadow-2xl overflow-hidden flex animate-fade-in">
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center p-4 relative"
+      style={{ backgroundImage: "url('/bg-login.png')" }}
+    >
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-blue-950/20 backdrop-blur-[2px]" />
+
+      <div className="w-full max-w-5xl bg-card rounded-3xl shadow-2xl overflow-hidden flex animate-fade-in relative z-10">
         {/* Left Panel - Decorative */}
         <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
           {/* Background Image with Amber Overlay */}
@@ -54,7 +60,7 @@ export default function Login() {
               backgroundImage: `url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80')`,
             }}
           />
-          <div className="absolute inset-0 bg-amber-500/85" />
+          <div className="absolute inset-0 bg-blue-500/85" />
 
           {/* Organic Wave Shape */}
           <svg
@@ -94,10 +100,11 @@ export default function Login() {
 
           {/* Content */}
           <div className="relative z-10 flex flex-col h-full p-10 text-white">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl font-light tracking-wide">Work</span>
-              <span className="text-3xl font-bold tracking-wide">FORCE</span>
-              <span className="text-3xl font-bold tracking-wide text-white/90">PRO</span>
+            <div className="flex items-center gap-3 font-medium">
+              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-transparent text-primary-foreground">
+                <img src="/Logo.png" alt="Logo" className="h-full w-full object-contain" />
+              </div>
+              <span className="text-2xl font-bold">WorkForce Pro</span>
             </div>
             <p className="mt-2 text-white/80 text-sm">
               Streamline your workforce management
@@ -108,9 +115,9 @@ export default function Login() {
         {/* Right Panel - Form */}
         <div className="flex-1 flex flex-col justify-between p-8 lg:p-12 bg-card">
           {/* Mobile Logo */}
-          <div className="flex lg:hidden items-center gap-2 mb-8">
-            <span className="text-2xl font-light">Work</span>
-            <span className="text-2xl font-bold text-amber-500">FORCE PRO</span>
+          <div className="flex lg:hidden items-center justify-center gap-3 mb-8">
+            <img src="/Logo.png" alt="WorkForce Pro" className="h-12 w-12 object-contain" />
+            <span className="text-2xl font-bold text-primary">WorkForce Pro</span>
           </div>
 
           <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
@@ -130,13 +137,13 @@ export default function Login() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                    className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
                   />
                   <Mail className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
                 <Link
                   to="#"
-                  className="text-xs text-muted-foreground hover:text-amber-500 transition-colors"
+                  className="text-xs text-muted-foreground hover:text-blue-500 transition-colors"
                 >
                   Forgot Email?
                 </Link>
@@ -150,7 +157,7 @@ export default function Login() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-amber-500 focus:ring-amber-500/20"
+                    className="h-12 pl-4 pr-10 bg-muted/50 border-border/50 focus:border-blue-500 focus:ring-blue-500/20"
                   />
                   <button
                     type="button"
@@ -166,7 +173,7 @@ export default function Login() {
                 </div>
                 <Link
                   to="#"
-                  className="text-xs text-muted-foreground hover:text-amber-500 transition-colors"
+                  className="text-xs text-muted-foreground hover:text-blue-500 transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -175,7 +182,7 @@ export default function Login() {
               <div className="flex justify-end pt-2">
                 <Button
                   type="submit"
-                  className="px-8 h-11 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25"
+                  className="px-8 h-11 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
                 >
                   Login
                 </Button>
@@ -184,7 +191,7 @@ export default function Login() {
 
             <p className="text-center text-sm text-muted-foreground mt-8">
               Don't have an account?{" "}
-              <Link to="/signup" className="font-medium text-amber-500 hover:text-amber-600 transition-colors">
+              <Link to="/signup" className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
                 Sign up
               </Link>
             </p>
@@ -192,13 +199,13 @@ export default function Login() {
 
           {/* Footer Links */}
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground pt-8">
-            <Link to="#" className="hover:text-amber-500 transition-colors">Security Policy</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Security Policy</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Privacy Policy</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Privacy Policy</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Legal</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Legal</Link>
             <span className="text-border">|</span>
-            <Link to="#" className="hover:text-amber-500 transition-colors">Technical Support</Link>
+            <Link to="#" className="hover:text-blue-500 transition-colors">Technical Support</Link>
           </div>
         </div>
       </div>

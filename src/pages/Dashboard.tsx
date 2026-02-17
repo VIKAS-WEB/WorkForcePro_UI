@@ -6,6 +6,7 @@ import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { useEffect, useState } from "react";
 import { fetchEmployees } from "@/lib/EmployeeService";
 
+
 export default function Dashboard() {
   const [totalEmployees, setTotalEmployees] = useState(0);
 
